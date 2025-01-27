@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+    <link rel="stylesheet" href="{% static 'login/css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'login/css/index.css' %}">
+    <style>
+        .social-login {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .github-button {
+            background: #24292e;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        .github-button:hover {
+            background: #2f363d;
+        }
+        .or-divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+        .or-divider:before,
+        .or-divider:after {
+            content: "";
+            position: absolute;
+            height: 1px;
+            background: #ddd;
+            top: 50%;
+            width: 45%;
+        }
+        .or-divider:before { left: 0; }
+        .or-divider:after { right: 0; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul class="menu">
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'dashboard' %}">Личный кабинет</a></li>
+                {% endif %}
+                <div class="right-menu">
+                    <li><a href="{% url 'login' %}">Вход</a></li>
+                    <li><a href="{% url 'register' %}">Регистрация</a></li>
+                </div>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div>
+            <h1>Вход в систему</h1>
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="social-login">
+                <a href="{% url 'social:begin' 'github' %}" class="github-button">
+                    Войти через GitHub
+                </a>
+            </div>
+
+            <div class="or-divider">или</div>
+
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div>
+                    <label for="username">Логин или Email:</label>
+                    <input type="text" id="username" name="username" 
+                           placeholder="Введите ваш логин или email" required>
+                </div>
+                <div>
+                    <label for="password">Пароль:</label>
+                    <input type="password" id="password" name="password" 
+                           placeholder="Введите ваш пароль" required>
+                    <button type="button" id="show-password">Показать пароль</button>
+                </div>
+                <button type="submit">Авторизоваться</button>
+                <div style="text-align: center; margin-top: 10px;">
+                    <a href="{% url 'register' %}" class="small-button">Зарегистрироваться</a>
+                </div>
+            </form>
+        </div> 
+    </main>
+    <script>
+        // JavaScript для показа/скрытия пароля
+        document.getElementById('show-password').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            this.textContent = type === 'text' ? 'Скрыть пароль' : 'Показать пароль';
+        });
+    </script>
+</body>
+</html> 

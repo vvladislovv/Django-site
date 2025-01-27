@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="{% static 'login/css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'login/css/index.css' %}">
+    <style>
+        .social-login {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .github-button {
+            background: #24292e;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        .github-button:hover {
+            background: #2f363d;
+        }
+        .or-divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+        .or-divider:before,
+        .or-divider:after {
+            content: "";
+            position: absolute;
+            height: 1px;
+            background: #ddd;
+            top: 50%;
+            width: 45%;
+        }
+        .or-divider:before { left: 0; }
+        .or-divider:after { right: 0; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul class="menu">
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'dashboard' %}">Личный кабинет</a></li>
+                {% endif %}
+                <div class="right-menu">
+                    <li><a href="{% url 'login' %}">Вход</a></li>
+                    <li><a href="{% url 'register' %}">Регистрация</a></li>
+                </div>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div>
+            <h1>Регистрация</h1>
+            
+            <div class="social-login">
+                <a href="{% url 'social:begin' 'github' %}" class="github-button">
+                    Зарегистрироваться через GitHub
+                </a>
+            </div>
+
+            <div class="or-divider">или</div>
+
+            <form method="post" action="{% url 'register' %}">
+                {% csrf_token %}
+                <div>
+                    <label for="name">Имя:</label>
+                    <input type="text" id="name" name="name" placeholder="Введите ваше имя" required>
+                </div>
+                <div>
+                    <label for="birth_date">Дата рождения:</label>
+                    <select id="birth_day" name="birth_day" required>
+                        <option value="">День</option>
+                        {% for day in days %}
+                            <option value="{{ day }}">{{ day }}</option>
+                        {% endfor %}
+                    </select>
+                    <select id="birth_month" name="birth_month" required>
+                        <option value="">Месяц</option>
+                        {% for month, name in months %}
+                            <option value="{{ month }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                    <select id="birth_year" name="birth_year" required>
+                        <option value="">Год</option>
+                        {% for year in years %}
+                            <option value="{{ year }}">{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="email">Почта:</label>
+                    <input type="email" id="email" name="email" placeholder="Введите вашу почту" required>
+                </div>
+                <div>
+                    <label for="password">Пароль:</label>
+                    <input type="password" id="password" name="password" placeholder="Введите ваш пароль" required>
+                </div>
+                <div>
+                    <label for="confirm_password">Повторите пароль:</label>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Повторите ваш пароль" required>
+                </div>
+                <button type="button" id="show-password">Показать пароли</button>
+                <button type="submit">Зарегистрироваться</button>
+                <div style="text-align: center; margin-top: 10px;">
+                    <a href="{% url 'login' %}" class="small-button">Уже зарегистрированы? Войти</a>
+                </div>
+            </form>
+        </div> 
+    </main>
+    <script>
+        // JavaScript для показа/скрытия паролей
+        document.getElementById('show-password').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirm_password');
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            confirmPasswordInput.type = type;
+            this.textContent = type === 'text' ? 'Скрыть пароли' : 'Показать пароли';
+        });
+    </script>
+</body>
+</html> 

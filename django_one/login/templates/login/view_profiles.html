@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Профили пользователей</title>
+</head>
+<body>
+    <h1>Профили пользователей</h1>
+    <ul>
+        {% for profile in profiles %}
+            <li>{{ profile.username }} - {{ profile.email }} - {{ profile.birth_date }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html> 

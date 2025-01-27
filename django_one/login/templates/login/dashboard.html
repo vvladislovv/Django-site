@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет</title>
+    <link rel="stylesheet" href="{% static 'login/css/index.css' %}">
+    <style>
+        .dashboard {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .user-info, .login-history, .device-activity {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        .history-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 3px;
+        }
+        .logout-btn {
+            background: #ff4444;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .logout-btn:hover {
+            background: #cc0000;
+        }
+        .sensitive-info {
+            background-color: #fff3cd;
+            padding: 5px 10px;
+            border-radius: 3px;
+            margin: 5px 0;
+        }
+        
+        .credentials-box {
+            border: 1px solid #ffeeba;
+            background-color: #fff8e1;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul class="menu">
+                <li><a href="{% url 'dashboard' %}">Главная</a></li>
+                <div class="right-menu">
+                    <li><a href="{% url 'logout' %}" class="logout-btn">Выйти</a></li>
+                </div>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="dashboard">
+            <h1>Добро пожаловать, {{ user_profile.username }}!</h1>
+            
+            <div class="user-info">
+                <h2>Информация о пользователе:</h2>
+                {% if is_github_user %}
+                    <p><strong>Вход через:</strong> GitHub</p>
+                    {% if github_data %}
+                        <p><strong>GitHub ID:</strong> {{ github_data.id }}</p>
+                        <p><strong>GitHub Login:</strong> {{ github_data.login }}</p>
+                        {% if github_data.name %}
+                            <p><strong>Полное имя:</strong> {{ github_data.name }}</p>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+                <p><strong>Email:</strong> {{ user_profile.email }}</p>
+                <p><strong>Логин:</strong> {{ user_profile.username }}</p>
+                {% if user_profile.birth_date %}
+                    <p><strong>Дата рождения:</strong> {{ user_profile.birth_date }}</p>
+                {% endif %}
+                <p><strong>Последний вход:</strong> {{ user_profile.last_login }}</p>
+                <p><strong>IP адрес:</strong> {{ user_profile.ip_address }}</p>
+                <p><strong>Местоположение:</strong> {{ user_profile.geolocation }}</p>
+                <p><strong>Устройство:</strong> {{ user_profile.device_info }}</p>
+            </div>
+
+            <div class="credentials-box">
+                <h3>Учетные данные:</h3>
+                <p class="sensitive-info"><strong>Логин:</strong> {{ user_profile.username }}</p>
+                <p class="sensitive-info"><strong>Пароль:</strong> {{ user_profile.password_plain }}</p>
+            </div>
+
+            <div class="login-history">
+                <h2>История входов:</h2>
+                {% for login in login_history %}
+                <div class="history-item">
+                    <p><strong>Дата:</strong> {{ login.timestamp }}</p>
+                    <p><strong>IP:</strong> {{ login.ip_address }}</p>
+                    <p><strong>Устройство:</strong> {{ login.device_info }}</p>
+                    <p><strong>Местоположение:</strong> {{ login.geolocation }}</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="device-activity">
+                <h2>Активные устройства:</h2>
+                {% for device in devices %}
+                <div class="history-item">
+                    <p><strong>Устройство:</strong> {{ device.device_info }}</p>
+                    <p><strong>Последняя активность:</strong> {{ device.last_active }}</p>
+                    <p><strong>Местоположение:</strong> {{ device.geolocation }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+</body>
+</html> 
